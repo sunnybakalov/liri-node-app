@@ -11,14 +11,16 @@
 
 //LIRI will search Spotify for songs       Go to Spotify to get music data
 
-var Spotify = require('node-spotify-api');
+var spotify = require('node-spotify-api');
+var omdb = require('omdb');
+var bit = require('bit_js');
  
-var spotify = new Spotify({
-//   id: <your spotify client id>,
-//   secret: <your spotify client secret>
+var spotifyInfo = new Spotify({
+  id: "0ccb04d2b75047deb9561d727b1b7a54",
+  secret: "5b9aff11bab3406c86b6b59f95a18dfd"
 });
 
-// function getMusicData(){
+function getMusicData(){
 spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
@@ -26,13 +28,43 @@ spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, d
  
 console.log(data); 
 });
-// }
+}
 
 //LIRI will search Bands in Town for concerts        get concert info
+var options = {
+  'artist': 'skrillex',
+  'app_id': 'my_app_id',
+};
+
+var optionsEvents = {
+  'artist': 'skrillex',
+  'app_id': 'my_app_id',
+  'daterange': '2017-09-20',
+}
+
+var callback = function(data) {
+  console.log(data)
+}
+
+
+bit.bitGetArtist(options, callback);
+bit.bitGetArtistEvents(optionsEvents, callback);
 
 
 //LIRI will search OMDB for movies         get movie
+omdb.get({ title: 'Saw', year: 2004 }, true, function(err, movie) {
+  if(err) {
+      return console.error(err);
+  }
 
+  if(!movie) {
+      return console.log('Movie not found!');
+  }
+
+  console.log('%s (%d) %d/10', movie.title, movie.year, movie.imdb.rating);
+  console.log(movie.plot);
+
+});
 
 
     //the purpose of Package JSON is to track packages or code that we use or install
