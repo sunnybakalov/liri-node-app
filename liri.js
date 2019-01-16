@@ -2,20 +2,15 @@
 
 //Go to API's and get data and console log it by using command line arguments
 
-//import packages & keys
-// var spotify = require('node-spotify-api');
-// var omdb = require('node-omdb-api');
-// var bandsInTown = require('node-bandsintown-api');
-
 //make some variables
 
 //LIRI will search Spotify for songs       Go to Spotify to get music data
 
-var spotify = require('node-spotify-api');
+var Spotify = require('node-spotify-api');
 var omdb = require('omdb');
 var bit = require('bit_js');
  
-var spotifyInfo = new Spotify({
+var spotify = new Spotify({
   id: "0ccb04d2b75047deb9561d727b1b7a54",
   secret: "5b9aff11bab3406c86b6b59f95a18dfd"
 });
@@ -30,7 +25,9 @@ console.log(data);
 });
 }
 
-//LIRI will search Bands in Town for concerts        get concert info
+getMusicData();
+
+//Bands In Town
 var options = {
   'artist': 'skrillex',
   'app_id': 'my_app_id',
@@ -50,8 +47,11 @@ var callback = function(data) {
 bit.bitGetArtist(options, callback);
 bit.bitGetArtistEvents(optionsEvents, callback);
 
+//OMDB
 
-//LIRI will search OMDB for movies         get movie
+var omdbAPIkey = "bc386333";
+var omdbUrl = "http://www.omdbapi.com/?apikey=" + omdbAPIkey + "&";
+
 omdb.get({ title: 'Saw', year: 2004 }, true, function(err, movie) {
   if(err) {
       return console.error(err);
@@ -74,5 +74,4 @@ omdb.get({ title: 'Saw', year: 2004 }, true, function(err, movie) {
 //create LIRI command that searches. ex: node liri concert-this "muse" shows the concerts    
 //ex: node liri spotify-this-song "Hit me baby one more time" logs the artist, song name, album, and preview song
 //ex: 
-
 
