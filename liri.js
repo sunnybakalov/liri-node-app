@@ -11,8 +11,8 @@ var omdb = require('omdb');
 var bit = require('bit_js');
  
 var spotify = new Spotify({
-  id: "0ccb04d2b75047deb9561d727b1b7a54",
-  secret: "5b9aff11bab3406c86b6b59f95a18dfd"
+  id: "",
+  secret: ""
 });
 
 function getMusicData(){
