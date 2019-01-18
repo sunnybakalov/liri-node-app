@@ -1,18 +1,28 @@
 //pseudo code for Liri
-
-//Go to API's and get data and console log it by using command line arguments
-
-//make some variables
-
-//LIRI will search Spotify for songs       Go to Spotify to get music data
-
 var Spotify = require('node-spotify-api');
-var omdb = require('omdb');
-var bit = require('bit_js');
+var axios = require('axios');
+
+//track user input via command line input
+var userCommand = process.argv[2];
+console.log(userCommand);
+
+var userInput;
+
+function formatUserInput () {
+  userInput = process.argv[3];
+  for (var i = 4; i < process.argv.length; i++) {
+    console.log(process.argv[i]);
+    userInput = userInput + " " + process.argv[i];
+  }
+}
+
+formatUserInput();
+
+console.log("this is user input:", userInput);
  
 var spotify = new Spotify({
-  id: "",
-  secret: ""
+  id: process.env.SPOTIFY_ID,
+  secret: process.env.SPOTIFY_SECRET
 });
 
 function getMusicData(){
@@ -25,53 +35,73 @@ console.log(data);
 });
 }
 
-getMusicData();
+// getMusicData();
 
 //Bands In Town
-var options = {
-  'artist': 'skrillex',
-  'app_id': 'my_app_id',
-};
 
-var optionsEvents = {
-  'artist': 'skrillex',
-  'app_id': 'my_app_id',
-  'daterange': '2017-09-20',
+function getBandsInTown() {
+  var url = "https://rest.bandsintown.com/artists/" + userInput + "/events?app_id=codingbootcamp"
+  //using axios to get the bands data
+  axios.get(url).then(function(bandData){
+    console.log("band data is here");
+    console.log(bandData.data[0]);
+    //once data is received, display the data
+    console.log(`
+      Name of Venue: ${bandData.data[0].venue.name}
+      Location: ${bandData.data[0].venue.city}, ${bandData.data[0].venue.country}
+      Date: ${bandData.data[0].datetime}
+    `)
+  })
 }
 
-var callback = function(data) {
-  console.log(data)
-}
-
-
-bit.bitGetArtist(options, callback);
-bit.bitGetArtistEvents(optionsEvents, callback);
 
 //OMDB
 
-var omdbAPIkey = "bc386333";
-var omdbUrl = "http://www.omdbapi.com/?apikey=" + omdbAPIkey + "&";
-
-omdb.get({ title: 'Saw', year: 2004 }, true, function(err, movie) {
-  if(err) {
-      return console.error(err);
+function getMovieData() {
+  if(userInput === undefined){
+    //search for a movie called "Mr. Nobody"
+    var omdbURL = "http://www.omdbapi.com/?apikey=trilogy&s=Mr.Nobody";
+  } else {
+    var omdbURL = "http://www.omdbapi.com/?apikey=trilogy&s=" + userInput;
   }
 
-  if(!movie) {
-      return console.log('Movie not found!');
-  }
+axios.get(omdbURL).then(function(movieData){
+  console.log("Should have movie data");
 
-  console.log('%s (%d) %d/10', movie.title, movie.year, movie.imdb.rating);
-  console.log(movie.plot);
+  console.log(`
+  #############################
+    * Movie title is: ${movieData.data.Search[0].Title}
+    * Year released: ${movieData.data.Search[0].Year}
+  #############################
+  `)
+})
+  .catch(function(err){
+    console.log("ERROR");
+    console.log(err);
+  })
 
-});
+}
 
+switch (userCommand) {
+  case "concert-this":
+    console.log("concert-this is running");
+    getBandsInTown();
 
-    //the purpose of Package JSON is to track packages or code that we use or install
+    break;
+  case "spotify-this-song":
+    console.log("spotify-this-song is running");
+    getMusicData();
 
+    break;
+  case "movie-this":
+  console.log("movie-this is running");
+    getMovieData();
 
+    break;
+  case "do-what-it-says":
 
-//create LIRI command that searches. ex: node liri concert-this "muse" shows the concerts    
-//ex: node liri spotify-this-song "Hit me baby one more time" logs the artist, song name, album, and preview song
-//ex: 
+    break;
 
+  default:
+    break;
+}
