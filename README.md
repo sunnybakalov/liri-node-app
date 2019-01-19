@@ -4,8 +4,17 @@ This is a back end app that has similar functionality to Apple's personal assist
 
 ## GOALS
 * To provide the user with song information from Spotify.
+<p align="center">
+<img align="center" src="/assets/song.gif" width="100%"/>
+</p>
 * To provide the user with movie information from OMDB.
+<p align="center">
+<img align="center" src="/assets/movie.gif" width="100%"/>
+</p>
 * To provide the user with concert information from BandsInTown.
+<p align="center">
+<img align="center" src="/assets/concert.gif" width="100%"/>
+</p>
 
 ## DESIGN PROCESS
 * Installed NPM packages from Axios, Fileshare, Moment.js & Spotify.
