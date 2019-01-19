@@ -20,15 +20,13 @@ function formatUserInput () {
 }
 
 formatUserInput();
-
-console.log("this is user input:", userInput);
  
 var spotify = new Spotify({
   id: process.env.SPOTIFY_ID,
   secret: process.env.SPOTIFY_SECRET
 });
 
-function getMusicData(){
+function getMusicData(userInput){
 spotify.search({ type: 'track', query: userInput }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
@@ -49,18 +47,19 @@ console.log(`
 }
 
 //Bands In Town
-function getBandsInTown() {
+function getBandsInTown(userInput) {
   var url = "https://rest.bandsintown.com/artists/" + userInput + "/events?app_id=codingbootcamp"
   //using axios to get the bands data
   axios.get(url).then(function(bandData){
-    console.log("band data is here");
-    console.log(bandData.data[0]);
+    // console.log(bandData.data[0]);
     var convertedDate = moment(bandData.data[0].datetime, "YYYY-MM-DD").format("MM/DD/YYYY")
     //once data is received, display the data
     console.log(`
+      #############################################
       Name of Venue: ${bandData.data[0].venue.name}
       Location: ${bandData.data[0].venue.city}, ${bandData.data[0].venue.country}
       Date: ${convertedDate}
+      #############################################
     `)
   })
 }
@@ -68,7 +67,7 @@ function getBandsInTown() {
 
 //OMDB
 
-function getMovieData() {
+function getMovieData(userInput) {
   if(userInput === undefined){
     //search for a movie called "Mr. Nobody"
     var omdbURL = "http://www.omdbapi.com/?apikey=trilogy&s=Mr.Nobody";
@@ -77,8 +76,7 @@ function getMovieData() {
   }
 
 axios.get(omdbURL).then(function(movieData){
-  console.log("Should have movie data");
-  console.log(movieData);
+  // console.log(movieData);
   console.log(`
   #############################
     * Movie title is: ${movieData.data.Search[0].Title}
@@ -95,7 +93,7 @@ axios.get(omdbURL).then(function(movieData){
 
 //do what it says
 
-function doWhatItSays () {
+function doWhatItSays (userInput) {
   fs.readFile("random.txt", "utf8", function(error, data) {
 
     if (error) {
@@ -104,31 +102,35 @@ function doWhatItSays () {
 
     var dataArr = data.split(",");
 
+    var userCommand = dataArr[0];
+    var userInput = dataArr[1];
+    theUserSearch(userCommand, userInput);
+
   })
 }
 
+function theUserSearch(userCommand, userInput){
 switch (userCommand) {
   case "concert-this":
-    console.log("concert-this is running");
-    getBandsInTown();
+    getBandsInTown(userInput);
 
     break;
   case "spotify-this-song":
-    console.log("spotify-this-song is running");
-    getMusicData();
+    getMusicData(userInput);
 
     break;
   case "movie-this":
-  console.log("movie-this is running");
-    getMovieData();
+    getMovieData(userInput);
 
     break;
   case "do-what-it-says":
-  console.log("do-what-it-says is running")
-    doWhatItSays ()
+    doWhatItSays (userInput)
     break;
 
   default:
   console.log("I don't know what to do because you haven't told me what to do.")
 
 }
+}
+
+theUserSearch(userCommand, userInput);
