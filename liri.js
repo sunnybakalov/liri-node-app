@@ -1,4 +1,5 @@
 //pseudo code for Liri
+require('dotenv').config();
 var Spotify = require('node-spotify-api');
 var axios = require('axios');
 
