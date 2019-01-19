@@ -3,7 +3,7 @@ require('dotenv').config();
 var Spotify = require('node-spotify-api');
 var axios = require('axios');
 var moment = require('moment');
-moment().format();
+var fs = require('fs');
 
 //track user input via command line input
 var userCommand = process.argv[2];
@@ -33,15 +33,22 @@ spotify.search({ type: 'track', query: userInput }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
   }
- 
-console.log(data); 
+
+// console.log(data); 
+
+var results = data.tracks.items[0];
+console.log(`
+             ########################
+             Artist: ${results.artist}
+             Song: ${results.name}
+             Link: ${results.href}
+             Album: ${results.album.name}
+             ########################
+`)
 });
 }
 
-// getMusicData();
-
 //Bands In Town
-
 function getBandsInTown() {
   var url = "https://rest.bandsintown.com/artists/" + userInput + "/events?app_id=codingbootcamp"
   //using axios to get the bands data
@@ -71,7 +78,7 @@ function getMovieData() {
 
 axios.get(omdbURL).then(function(movieData){
   console.log("Should have movie data");
-
+  console.log(movieData);
   console.log(`
   #############################
     * Movie title is: ${movieData.data.Search[0].Title}
@@ -84,6 +91,20 @@ axios.get(omdbURL).then(function(movieData){
     console.log(err);
   })
 
+}
+
+//do what it says
+
+function doWhatItSays () {
+  fs.readFile("random.txt", "utf8", function(error, data) {
+
+    if (error) {
+      return console.log(error);
+    }
+
+    var dataArr = data.split(",");
+
+  })
 }
 
 switch (userCommand) {
@@ -103,9 +124,11 @@ switch (userCommand) {
 
     break;
   case "do-what-it-says":
-
+  console.log("do-what-it-says is running")
+    doWhatItSays ()
     break;
 
   default:
-    break;
+  console.log("I don't know what to do because you haven't told me what to do.")
+
 }
