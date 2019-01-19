@@ -2,6 +2,8 @@
 require('dotenv').config();
 var Spotify = require('node-spotify-api');
 var axios = require('axios');
+var moment = require('moment');
+moment().format();
 
 //track user input via command line input
 var userCommand = process.argv[2];
@@ -27,7 +29,7 @@ var spotify = new Spotify({
 });
 
 function getMusicData(){
-spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+spotify.search({ type: 'track', query: userInput }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
   }
@@ -46,11 +48,12 @@ function getBandsInTown() {
   axios.get(url).then(function(bandData){
     console.log("band data is here");
     console.log(bandData.data[0]);
+    var convertedDate = moment(bandData.data[0].datetime, "YYYY-MM-DD").format("MM/DD/YYYY")
     //once data is received, display the data
     console.log(`
       Name of Venue: ${bandData.data[0].venue.name}
       Location: ${bandData.data[0].venue.city}, ${bandData.data[0].venue.country}
-      Date: ${bandData.data[0].datetime}
+      Date: ${convertedDate}
     `)
   })
 }
