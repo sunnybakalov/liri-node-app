@@ -54,7 +54,6 @@ function getBandsInTown(userInput) {
     "/events?app_id=codingbootcamp";
   //using axios to get the bands data
   axios.get(url).then(function(bandData) {
-    // console.log(bandData.data[0]);
     var convertedDate = moment(bandData.data[0].datetime, "YYYY-MM-DD").format(
       "MM/DD/YYYY"
     );
